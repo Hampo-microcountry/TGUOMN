@@ -1,21 +1,20 @@
-
 {
-  "id": "./index.html",
+  "id": "./",
   "name": "The Great Union of Micro Nations",
   "short_name": "TGUOMN",
-  "description": "The official information and administration portal of TGUOMN.",
+  "description": "The official website of The Great Union of Micro Nations.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#f3f6f9",
-  "theme_color": "#102b46",
+  "background_color": "#f4f7fb",
+  "theme_color": "#102a43",
   "icons": [
-  {
-    "src": "assets/LOGGO.png",
-    "sizes": "any",
-    "type": "image/png",
-    "purpose": "any"
-  }
-]
+    {
+      "src": "assets/LOGGO.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
 }
