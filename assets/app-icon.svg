@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="104" fill="#102a43"/>
+  <rect x="24" y="24" width="464" height="464" rx="84" fill="none" stroke="#c6a45b" stroke-width="12"/>
+  <path d="M256 75l23 47 52 8-38 37 9 52-46-25-46 25 9-52-38-37 52-8z" fill="#c6a45b"/>
+  <text x="256" y="315" text-anchor="middle" font-family="Georgia,serif" font-size="94" font-weight="bold" fill="#fff">TG</text>
+  <text x="256" y="390" text-anchor="middle" font-family="Arial,sans-serif" font-size="65" font-weight="bold" letter-spacing="8" fill="#c6a45b">UOMN</text>
+</svg>
