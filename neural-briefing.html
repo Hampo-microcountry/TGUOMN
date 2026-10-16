@@ -11,11 +11,23 @@
 </head>
 <body>
 <h2>Listen to the briefing</h2>
-<p>Use the FreeTTS player below to hear the TGUOMN introduction with a neural voice.</p>
+<p>The selected FreeTTS neural narrator is shown below. To change narrator, return to the TGUOMN podcast page and choose another voice.</p>
 <div class="transcript">
 <p>Welcome to TGUOMN Audio Briefings. TGUOMN stands for The Great Union of Micro Nations. It is an alliance created to encourage cooperation, diplomatic communication, mutual respect, and shared learning among micronations. Each member can keep its own identity, leadership, and internal rules while working with other members on common goals. The Union website publishes information about its structure, charter, member directory, laws, announcements, and history. A micronational organization is not the same thing as internationally recognized sovereign states. Thanks for listening to this introductory TGUOMN audio briefing.</p>
 </div>
-<script src="https://freetts.org/widget.js" data-voice="en-US-JennyNeural" data-theme="light" data-autoplay="false"></script>
+<script>
+(() => {
+ const supported = new Set(['en-US-JennyNeural','en-US-GuyNeural','en-US-AriaNeural','en-GB-SoniaNeural']);
+ const requested = new URLSearchParams(window.location.search).get('voice');
+ const voice = supported.has(requested) ? requested : 'en-US-JennyNeural';
+ const script = document.createElement('script');
+ script.src = 'https://freetts.org/widget.js';
+ script.dataset.voice = voice;
+ script.dataset.theme = 'light';
+ script.dataset.autoplay = 'false';
+ document.currentScript.replaceWith(script);
+})();
+</script>
 <p><small>Audio is provided by FreeTTS, a third-party text-to-speech service. If the player does not appear, open <a href="https://freetts.org/" target="_blank" rel="noopener noreferrer">FreeTTS</a> in a new tab.</small></p>
 </body>
 </html>
