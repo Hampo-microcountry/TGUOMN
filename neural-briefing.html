@@ -4,56 +4,50 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#ffffff">
-<title>TGUOMN FreeTTS Audio Briefing</title>
+<title>TGUOMN Audio Briefing Player</title>
 <style>
 :root{color-scheme:light}*{box-sizing:border-box}body{font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;padding:16px;color:#102a43;background:#fff}
-.player{max-width:620px;margin:auto}.voice-select{width:100%;padding:10px;border:1px solid #b9c6d1;border-radius:8px;font:inherit;background:white;color:#102a43}.widget-box{margin:16px 0;padding:14px;border:1px solid #d8e1e8;border-radius:10px;background:#f7f9fb;min-height:90px}.status{min-height:24px;color:#526777;font-size:13px}.transcript{padding:12px;border-radius:8px;background:#f3f6f8;margin:12px 0;font-size:13px}button{border:0;border-radius:8px;padding:9px 13px;font:inherit;font-weight:650;cursor:pointer;background:#102a43;color:white;margin-top:10px}
+.player{max-width:620px;margin:auto}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.buttons button{border:0;border-radius:8px;padding:11px 16px;font:inherit;font-weight:700;cursor:pointer;background:#102a43;color:#fff}.buttons button.secondary{background:#e8eef3;color:#102a43}.voice-select{width:100%;padding:10px;border:1px solid #b9c6d1;border-radius:8px;font:inherit;background:white;color:#102a43}.progress-row{display:flex;justify-content:space-between;gap:12px;font-size:13px;font-weight:600;margin-top:16px}.progress{width:100%;accent-color:#087e8b;cursor:pointer;margin:8px 0}.status{min-height:24px;color:#526777;font-size:13px}.transcript{padding:12px;border-radius:8px;background:#f3f6f8;margin:12px 0;font-size:13px}.credit{font-size:12px;color:#526777}
 </style>
 </head>
 <body>
 <div class="player">
 <h2>Listen to the briefing</h2>
-<p>This player uses FreeTTS neural narration, not voices installed on your device.</p>
-<label for="voice"><strong>FreeTTS neural voice</strong></label>
-<select id="voice" class="voice-select">
-<option value="en-US-JennyNeural">Voice 1 · Jenny — US English</option>
-<option value="en-US-GuyNeural">Voice 2 · Guy — US English</option>
-<option value="en-US-AriaNeural">Voice 3 · Aria — US English</option>
-<option value="en-GB-SoniaNeural">Voice 4 · Sonia — British English</option>
+<label for="voice"><strong>Choose a narrator</strong></label>
+<select id="voice" class="voice-select" aria-label="Choose audio narrator">
+<option value="voice-1">Voice 1</option><option value="voice-2">Voice 2</option>
 </select>
-<div class="widget-box" id="freetts-player" aria-label="FreeTTS audio player">
-<p id="status" class="status" role="status" aria-live="polite">Loading the FreeTTS player…</p>
+<audio id="audio" preload="metadata"></audio>
+<div class="buttons">
+<button id="play" type="button">▶ Play</button>
+<button id="pause" class="secondary" type="button">Ⅱ Pause</button>
+<button id="restart" class="secondary" type="button">↻ Restart</button>
 </div>
-<button id="reload" type="button">Load selected voice</button>
-<div class="transcript"><strong>Episode transcript</strong><p id="transcript"></p></div>
-<p class="status">FreeTTS provides the neural voice and its playback interface. This embedded widget's controls are provided by FreeTTS; custom synchronized seeking requires generated MP3 audio from its API.</p>
-<p><a href="https://freetts.org/developers" target="_blank" rel="noopener noreferrer">FreeTTS developer documentation</a></p>
+<div class="progress-row"><span>Progress</span><span id="time">0:00 / --:--</span></div>
+<input id="progress" class="progress" type="range" min="0" max="1000" value="0" step="1" aria-label="Briefing progress" disabled>
+<p id="status" class="status" role="status" aria-live="polite">Choose a voice and press Play.</p>
+<div class="transcript"><strong>Episode transcript</strong><p>Welcome to TGUOMN Audio Briefings. TGUOMN stands for The Great Union of Micro Nations. It is an alliance created to encourage cooperation, diplomatic communication, mutual respect, and shared learning among micronations. Each member can keep its own identity, leadership, and internal rules while working with other members on common goals. The Union website publishes information about its structure, charter, member directory, laws, announcements, and history. A micronational organization is not the same thing as internationally recognized sovereign states. Thanks for listening to this introductory TGUOMN audio briefing.</p></div>
+<p class="credit">Narration generated with ElevenLabs. <a href="https://elevenlabs.io/" target="_blank" rel="noopener noreferrer">ElevenLabs</a></p>
 </div>
 <script>
 (() => {
-const text = "Welcome to TGUOMN Audio Briefings. TGUOMN stands for The Great Union of Micro Nations. It is an alliance created to encourage cooperation, diplomatic communication, mutual respect, and shared learning among micronations. Each member can keep its own identity, leadership, and internal rules while working with other members on common goals. The Union website publishes information about its structure, charter, member directory, laws, announcements, and history. A micronational organization is not the same thing as internationally recognized sovereign states. Thanks for listening to this introductory TGUOMN audio briefing.";
-const select=document.getElementById("voice"), status=document.getElementById("status"), host=document.getElementById("freetts-player");
-document.getElementById("transcript").textContent=text;
-const allowed=new Set(["en-US-JennyNeural","en-US-GuyNeural","en-US-AriaNeural","en-GB-SoniaNeural"]);
-const requested=new URLSearchParams(location.search).get("voice");
-if(allowed.has(requested)) select.value=requested;
-function loadWidget(){
-  const voice=allowed.has(select.value)?select.value:"en-US-JennyNeural";
-  host.innerHTML="";
-  status.textContent="Loading FreeTTS neural voice: "+voice+"…";
-  const script=document.createElement("script");
-  script.src="https://freetts.org/widget.js";
-  script.setAttribute("data-voice",voice);
-  script.setAttribute("data-theme","light");
-  script.setAttribute("data-autoplay","false");
-  script.onload=()=>{status.textContent="FreeTTS widget loaded. Use its player controls to listen.";};
-  script.onerror=()=>{status.textContent="FreeTTS could not load. Check your internet connection or try again later.";};
-  host.appendChild(status);
-  host.appendChild(script);
-}
-document.getElementById("reload").addEventListener("click",loadWidget);
-select.addEventListener("change",()=>{const u=new URL(location.href);u.searchParams.set("voice",select.value);history.replaceState(null,"",u);});
-loadWidget();
+const audio=document.getElementById("audio"), select=document.getElementById("voice"), play=document.getElementById("play"), pause=document.getElementById("pause"), restart=document.getElementById("restart"), progress=document.getElementById("progress"), time=document.getElementById("time"), status=document.getElementById("status");
+const files={"voice-1":"assets/podcast/mp3/voice-1.mp3","voice-2":"assets/podcast/mp3/voice-2.mp3"};
+const fmt=n=>{if(!Number.isFinite(n)||n<0)return "--:--";n=Math.floor(n);return Math.floor(n/60)+":"+String(n%60).padStart(2,"0")};
+function updateTime(){const duration=audio.duration;const current=audio.currentTime||0;time.textContent=fmt(current)+" / "+fmt(duration);progress.value=Number.isFinite(duration)&&duration>0?Math.round(current/duration*1000):0;progress.disabled=!(Number.isFinite(duration)&&duration>0);}
+function loadVoice(autoplay=false){audio.pause();audio.removeAttribute("src");audio.load();audio.src=files[select.value]||files["voice-1"];audio.load();progress.value=0;time.textContent="0:00 / --:--";progress.disabled=true;status.textContent="Loading "+select.options[select.selectedIndex].text+"…";if(autoplay){audio.play().then(()=>{status.textContent="Playing "+select.options[select.selectedIndex].text+".";}).catch(()=>{status.textContent="Audio is not ready yet. Add the MP3 file to assets/podcast/mp3/ and reload.";});}}
+play.addEventListener("click",()=>{if(!audio.getAttribute("src"))loadVoice();audio.play().then(()=>{status.textContent="Playing "+select.options[select.selectedIndex].text+".";}).catch(()=>{status.textContent="Could not play this audio. Make sure "+files[select.value]+" exists and is a valid MP3.";});});
+pause.addEventListener("click",()=>{audio.pause();status.textContent=audio.currentTime>0?"Paused.":"Playback is paused.";});
+restart.addEventListener("click",()=>{if(!audio.getAttribute("src"))loadVoice();audio.currentTime=0;audio.play().then(()=>{status.textContent="Restarted from the beginning.";}).catch(()=>{status.textContent="Add the MP3 file to assets/podcast/mp3/ before playing.";});});
+select.addEventListener("change",()=>loadVoice(false));
+progress.addEventListener("input",()=>{if(Number.isFinite(audio.duration)&&audio.duration>0)audio.currentTime=(Number(progress.value)/1000)*audio.duration;});
+audio.addEventListener("loadedmetadata",()=>{updateTime();status.textContent="Ready to play.";});
+audio.addEventListener("timeupdate",updateTime);
+audio.addEventListener("play",()=>{if(audio.readyState>=2)status.textContent="Playing "+select.options[select.selectedIndex].text+".";});
+audio.addEventListener("pause",()=>{updateTime();});
+audio.addEventListener("ended",()=>{updateTime();status.textContent="Briefing finished.";});
+audio.addEventListener("error",()=>{progress.disabled=true;status.textContent="MP3 not found or could not be loaded. Add "+files[select.value]+" to the repository, then reload.";time.textContent="0:00 / --:--";});
+loadVoice(false);
 })();
 </script>
 </body>
