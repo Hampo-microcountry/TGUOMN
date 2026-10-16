@@ -4,30 +4,52 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#ffffff">
-<title>TGUOMN Neural Audio Briefing</title>
+<title>TGUOMN Audio Briefing Player</title>
 <style>
-:root{color-scheme:light}body{font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;padding:16px;color:#102a43;background:#fff}p{margin-top:0}.transcript{padding:12px;border-radius:8px;background:#f3f6f8;margin:12px 0}small{color:#526777}
+:root{color-scheme:light}*{box-sizing:border-box}body{font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;padding:16px;color:#102a43;background:#fff}
+.player{max-width:620px;margin:auto}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.buttons button{border:0;border-radius:8px;padding:11px 16px;font:inherit;font-weight:700;cursor:pointer;background:#102a43;color:#fff}.buttons button.secondary{background:#e8eef3;color:#102a43}.voice-select{width:100%;padding:10px;border:1px solid #b9c6d1;border-radius:8px;font:inherit;background:white;color:#102a43}.progress-row{display:flex;justify-content:space-between;gap:12px;font-size:13px;font-weight:600;margin-top:16px}.progress{width:100%;accent-color:#087e8b;cursor:pointer;margin:8px 0}.status{min-height:24px;color:#526777;font-size:13px}.transcript{padding:12px;border-radius:8px;background:#f3f6f8;margin:12px 0;font-size:13px}
 </style>
 </head>
 <body>
+<div class="player">
 <h2>Listen to the briefing</h2>
-<p>The selected FreeTTS neural narrator is shown below. To change narrator, return to the TGUOMN podcast page and choose another voice.</p>
-<div class="transcript">
-<p>Welcome to TGUOMN Audio Briefings. TGUOMN stands for The Great Union of Micro Nations. It is an alliance created to encourage cooperation, diplomatic communication, mutual respect, and shared learning among micronations. Each member can keep its own identity, leadership, and internal rules while working with other members on common goals. The Union website publishes information about its structure, charter, member directory, laws, announcements, and history. A micronational organization is not the same thing as internationally recognized sovereign states. Thanks for listening to this introductory TGUOMN audio briefing.</p>
+<label for="voice"><strong>Voice</strong></label>
+<select id="voice" class="voice-select" aria-label="Choose narration voice">
+<option value="0">Voice 1</option><option value="1">Voice 2</option><option value="2">Voice 3</option><option value="3">Voice 4</option>
+</select>
+<div class="buttons">
+<button id="play" type="button">▶ Play</button>
+<button id="pause" class="secondary" type="button">Ⅱ Pause</button>
+<button id="restart" class="secondary" type="button">↻ Restart</button>
+</div>
+<div class="progress-row"><span>Progress</span><span id="time">0:00 / --:--</span></div>
+<input id="progress" class="progress" type="range" min="0" max="1000" value="0" step="1" aria-label="Briefing progress">
+<p id="status" class="status" role="status" aria-live="polite">Press Play to hear the briefing.</p>
+<div class="transcript"><strong>Episode transcript</strong><p id="transcript"></p></div>
+<p class="status">Playback controls and seeking are supported. Available voices come from the speech engine provided by your browser/device; this player does not yet contain a hosted neural MP3 recording.</p>
 </div>
 <script>
 (() => {
- const supported = new Set(['en-US-JennyNeural','en-US-GuyNeural','en-US-AriaNeural','en-GB-SoniaNeural']);
- const requested = new URLSearchParams(window.location.search).get('voice');
- const voice = supported.has(requested) ? requested : 'en-US-JennyNeural';
- const script = document.createElement('script');
- script.src = 'https://freetts.org/widget.js';
- script.dataset.voice = voice;
- script.dataset.theme = 'light';
- script.dataset.autoplay = 'false';
- document.currentScript.replaceWith(script);
+const text = "Welcome to TGUOMN Audio Briefings. TGUOMN stands for The Great Union of Micro Nations. It is an alliance created to encourage cooperation, diplomatic communication, mutual respect, and shared learning among micronations. Each member can keep its own identity, leadership, and internal rules while working with other members on common goals. The Union website publishes information about its structure, charter, member directory, laws, announcements, and history. A micronational organization is not the same thing as internationally recognized sovereign states. Thanks for listening to this introductory TGUOMN audio briefing.";
+const voiceSelect=document.getElementById("voice"), play=document.getElementById("play"), pause=document.getElementById("pause"), restart=document.getElementById("restart"), progress=document.getElementById("progress"), time=document.getElementById("time"), status=document.getElementById("status");
+document.getElementById("transcript").textContent=text;
+let voices=[], chunks=[], current=0, paused=false, active=false, startedAt=0, elapsedBefore=0, ticker=null;
+const estimatedDuration=Math.max(1,text.split(/\s+/).length/2.25);
+const fmt=n=>{n=Math.max(0,Math.floor(n));return Math.floor(n/60)+":"+String(n%60).padStart(2,"0")};
+function refreshVoices(){if(!("speechSynthesis" in window)){status.textContent="Speech playback is not supported in this browser.";return;}voices=window.speechSynthesis.getVoices();const en=voices.filter(v=>/^en([-_]|$)/i.test(v.lang||""));const list=(en.length?en:voices).slice();const seen=new Set();voices=list.filter(v=>{const k=v.name+"|"+v.lang;if(seen.has(k))return false;seen.add(k);return true;}).slice(0,4);voiceSelect.innerHTML="";voices.forEach((v,i)=>{const o=document.createElement("option");o.value=i;o.textContent="Voice "+(i+1)+" · "+v.name;voiceSelect.appendChild(o)});if(!voices.length){const o=document.createElement("option");o.value="-1";o.textContent="No voices available";voiceSelect.appendChild(o);status.textContent="No speech voices are available. Check your device's text-to-speech settings.";}else if(voices.length<4){status.textContent="Your device provides "+voices.length+" available voice(s).";}}
+function updateProgress(){let elapsed=elapsedBefore;if(active&&!paused)elapsed+=(performance.now()-startedAt)/1000;const ratio=Math.min(1,elapsed/estimatedDuration);progress.value=Math.round(ratio*1000);time.textContent=fmt(elapsed)+" / "+fmt(estimatedDuration);if(ratio>=1&&active&&!paused){finish();}}
+function clearTicker(){if(ticker){clearInterval(ticker);ticker=null;}}
+function finish(){active=false;paused=false;elapsedBefore=0;current=0;clearTicker();progress.value=1000;time.textContent=fmt(estimatedDuration)+" / "+fmt(estimatedDuration);status.textContent="Briefing finished.";}
+function stopSpeech(){if("speechSynthesis" in window)window.speechSynthesis.cancel();clearTicker();active=false;paused=false;}
+function speakFrom(ratio){if(!("speechSynthesis" in window)||!voices.length){refreshVoices();if(!voices.length)return;}stopSpeech();const voice=voices[Math.max(0,Math.min(voices.length-1,Number(voiceSelect.value)||0))];const words=text.split(/\s+/);const start=Math.floor(words.length*Math.max(0,Math.min(.99,ratio)));const utterance=new SpeechSynthesisUtterance(words.slice(start).join(" "));utterance.voice=voice;utterance.lang=voice.lang||"en-US";utterance.rate=1;active=true;paused=false;elapsedBefore=estimatedDuration*ratio;startedAt=performance.now();status.textContent="Playing with "+voice.name+".";utterance.onend=()=>{if(active)finish();};utterance.onerror=e=>{if(active&&e.error!=="canceled"&&e.error!=="interrupted"){status.textContent="Playback could not start. Try another voice.";stopSpeech();}};window.speechSynthesis.speak(utterance);ticker=setInterval(updateProgress,250);}
+play.addEventListener("click",()=>{if(paused&&window.speechSynthesis){window.speechSynthesis.resume();paused=false;startedAt=performance.now();status.textContent="Playing.";return;}if(!active)speakFrom(Number(progress.value)/1000);});
+pause.addEventListener("click",()=>{if(window.speechSynthesis&&active&&!paused){window.speechSynthesis.pause();elapsedBefore+= (performance.now()-startedAt)/1000;paused=true;status.textContent="Paused.";updateProgress();}});
+restart.addEventListener("click",()=>{progress.value=0;elapsedBefore=0;time.textContent="0:00 / "+fmt(estimatedDuration);speakFrom(0);});
+progress.addEventListener("input",()=>{if(!active&&!paused){time.textContent=fmt(estimatedDuration*Number(progress.value)/1000)+" / "+fmt(estimatedDuration);return;}const ratio=Number(progress.value)/1000;speakFrom(ratio);});
+voiceSelect.addEventListener("change",()=>{if(active||paused)speakFrom(Number(progress.value)/1000);});
+if("speechSynthesis" in window){refreshVoices();window.speechSynthesis.addEventListener?.("voiceschanged",refreshVoices);}
+window.addEventListener("pagehide",stopSpeech);
 })();
 </script>
-<p><small>Audio is provided by FreeTTS, a third-party text-to-speech service. If the player does not appear, open <a href="https://freetts.org/" target="_blank" rel="noopener noreferrer">FreeTTS</a> in a new tab.</small></p>
 </body>
 </html>
