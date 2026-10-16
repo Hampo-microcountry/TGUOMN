@@ -280,3 +280,34 @@ footer a { color: #b6dfe2; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; }
 }
+
+/* Homepage uses the same framed page layout as the inner pages. */
+.homepage-layout {
+  padding: 0;
+  overflow: hidden;
+}
+.homepage-layout > .hero {
+  width: auto;
+  margin: 0;
+  border-left: 0;
+  border-bottom: 4px solid var(--gold);
+  border-radius: 0;
+  box-shadow: none;
+}
+.homepage-layout > .section {
+  width: auto;
+  margin: 30px 0 0;
+  padding-inline: clamp(16px, 3vw, 32px);
+}
+.homepage-layout > .section:last-child {
+  padding-bottom: 30px;
+}
+.homepage-layout .section-heading h2,
+.homepage-layout .content-panel h2,
+.homepage-layout .notice h2 {
+  margin-top: 0;
+}
+nav { row-gap: 0; }
+@media (max-width: 760px) {
+  .homepage-layout > .section { padding-inline: 14px; }
+}
