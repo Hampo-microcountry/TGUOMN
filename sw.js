@@ -1,5 +1,5 @@
 
-const CACHE_NAME = "tguomn-cache-v2";
+const CACHE_NAME = "tguomn-cache-v3";
 
 const CORE_FILES = [
   "./",
