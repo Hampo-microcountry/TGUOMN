@@ -36,12 +36,9 @@ body.tguomn-installed-app .app-exclusive-message { display: none; }
 <p>Learn the purpose of The Great Union of Micro Nations and how cooperation can work while each member keeps its own identity and internal governance.</p>
 <p><span class="status">Audio briefing</span> <span class="status-date">Read aloud by your device</span></p>
 <div class="podcast-player" aria-label="Podcast audio player">
-<label for="voice-style"><strong>Voice style</strong></label>
+<label for="voice-style"><strong>Choose a voice</strong></label>
 <select id="voice-style" class="voice-select">
-<option value="natural">1 · Natural narrator</option>
-<option value="warm">2 · Warm &amp; friendly</option>
-<option value="clear">3 · Clear presenter</option>
-<option value="story">4 · Storyteller</option>
+<option value="0">Loading available voices…</option>
 </select>
 <div class="hero-actions player-buttons">
 <button class="button button-primary" id="play-briefing" type="button">▶ Play briefing</button>
@@ -51,7 +48,7 @@ body.tguomn-installed-app .app-exclusive-message { display: none; }
 <label class="timebar-label" for="podcast-timebar"><span>Playback</span><span id="time-readout">0:00 / 0:00</span></label>
 <input id="podcast-timebar" class="timebar" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek through briefing">
 <p id="audio-status" role="status" aria-live="polite">Choose a voice style and press Play. Available voice quality depends on your phone or browser.</p>
-<p class="voice-note">These are four speaking styles, not four guaranteed studio voices. The app uses your device’s installed speech voices; some may sound more natural than others.</p>
+<p class="voice-note">The player selects four different voices available on your device when at least four are installed. Voice realism depends on your device’s speech engine; this player does not generate studio-quality human recordings.</p>
 </div></section>
 <section class="section"><div class="notice"><h3>Make TGUOMN one tap away</h3><p>Install TGUOMN on your phone's home screen to open the Union's pages and audio briefings like a standalone app.</p><p><strong>Android:</strong> use “Add to Home” if your browser offers it, or open the browser menu and choose “Install app” / “Add to Home screen.”</p><p><strong>iPhone:</strong> open this page in Safari, tap Share, then choose “Add to Home Screen.”</p></div></section>
 <p><a href="index.html">← Back to the TGUOMN home page</a></p></div></article></main>
@@ -61,54 +58,68 @@ body.tguomn-installed-app .app-exclusive-message { display: none; }
 <script>
 (() => {
 const script = "Welcome to TGUOMN Audio Briefings. TGUOMN stands for The Great Union of Micro Nations. It is an alliance created to encourage cooperation, diplomatic communication, mutual respect, and shared learning among micronations. Each member can keep its own identity, leadership, and internal rules while working with other members on common goals. The Union website publishes information about its structure, charter, member directory, laws, announcements, and history. A micronational organization is not the same thing as internationally recognized sovereign states. Thanks for listening to this introductory TGUOMN audio briefing.";
-const play=document.getElementById("play-briefing");
-const pause=document.getElementById("pause-briefing");
-const stop=document.getElementById("stop-briefing");
-const status=document.getElementById("audio-status");
-const voiceStyle=document.getElementById("voice-style");
-const timebar=document.getElementById("podcast-timebar");
-const timeReadout=document.getElementById("time-readout");
-let offset=0, currentUtterance=null, isPlaying=false, duration= Math.max(1, script.trim().split(/\s+/).length / 130 * 60);
-let voices=[];
-const styles={
- natural:{rate:0.96,pitch:1.0,terms:["natural","neural","enhanced","premium","online"]},
- warm:{rate:0.91,pitch:0.94,terms:["warm","friendly","female","samantha","aria","jenny","zira"]},
- clear:{rate:1.02,pitch:1.0,terms:["clear","presenter","male","david","guy","ryan","mark"]},
- story:{rate:0.88,pitch:0.97,terms:["story","narrator","serena","karen","daniel","oliver"]}
-};
-function formatTime(seconds){seconds=Math.max(0,Math.floor(seconds));return Math.floor(seconds/60)+":"+String(seconds%60).padStart(2,"0");}
-function updateTime(position){const progress=Math.max(0,Math.min(1,position/script.length));timebar.value=String(Math.round(progress*1000));timeReadout.textContent=formatTime(duration*progress)+" / "+formatTime(duration);}
-function chooseVoice(style){
- if(!voices.length)return null;
+const play=document.getElementById("play-briefing"), pause=document.getElementById("pause-briefing"), stop=document.getElementById("stop-briefing");
+const status=document.getElementById("audio-status"), voiceSelect=document.getElementById("voice-style");
+const timebar=document.getElementById("podcast-timebar"), timeReadout=document.getElementById("time-readout");
+let voices=[], chosenVoices=[], offset=0, isPlaying=false;
+const duration=Math.max(1,script.trim().split(/\s+/).length/125*60);
+const delivery=[
+ {rate:0.94,pitch:1.02,label:"Natural delivery"},
+ {rate:0.90,pitch:0.94,label:"Warm delivery"},
+ {rate:1.00,pitch:1.00,label:"Presenter delivery"},
+ {rate:0.87,pitch:0.98,label:"Storytelling delivery"}
+];
+function fmt(n){n=Math.max(0,Math.floor(n));return Math.floor(n/60)+":"+String(n%60).padStart(2,"0");}
+function updateTime(char){const ratio=Math.max(0,Math.min(1,char/script.length));timebar.value=String(Math.round(ratio*1000));timeReadout.textContent=fmt(duration*ratio)+" / "+fmt(duration);}
+function rankVoice(v){
+ const n=(v.name+" "+v.voiceURI).toLowerCase(); let score=0;
+ if(/^en([-_]|$)/i.test(v.lang||""))score+=100;
+ if(/neural|natural|premium|enhanced|online/i.test(n))score+=35;
+ if(/google|microsoft|apple/i.test(n))score+=5;
+ if(v.localService===false)score+=8;
+ if(/compact|espeak|robot|synthetic/i.test(n))score-=30;
+ return score;
+}
+function loadVoices(){
+ if(!("speechSynthesis" in window))return;
+ voices=window.speechSynthesis.getVoices()||[];
  const english=voices.filter(v=>/^en([-_]|$)/i.test(v.lang||""));
- const pool=english.length?english:voices;
- const terms=styles[style].terms;
- return pool.find(v=>terms.some(t=>(v.name+" "+v.voiceURI).toLowerCase().includes(t))) ||
-   pool.find(v=>/natural|neural|premium|enhanced/i.test(v.name)) || pool[0] || null;
+ const pool=(english.length?english:voices).slice().sort((a,b)=>rankVoice(b)-rankVoice(a));
+ const unique=[];const seen=new Set();
+ for(const v of pool){const key=(v.name+"|"+v.lang).toLowerCase();if(!seen.has(key)){seen.add(key);unique.push(v);}}
+ chosenVoices=unique.slice(0,4);
+ voiceSelect.innerHTML="";
+ chosenVoices.forEach((v,i)=>{const o=document.createElement("option");o.value=String(i);o.textContent="Voice "+(i+1)+" · "+v.name+" ("+v.lang+")";voiceSelect.appendChild(o);});
+ if(chosenVoices.length===0){
+   const o=document.createElement("option");o.value="-1";o.textContent="No device voices found";voiceSelect.appendChild(o);
+   status.textContent="This browser has not provided any speech voices yet. Try reopening the app or checking your device's text-to-speech settings.";
+ }else if(chosenVoices.length<4){
+   status.textContent="Your device currently provides "+chosenVoices.length+" distinct voice"+(chosenVoices.length===1?"":"s")+". Install additional English text-to-speech voices in device settings to get four genuinely different voices.";
+ }else{
+   status.textContent="Four distinct device voices are ready. Choose one and press Play. Voices marked natural, neural, or enhanced may sound more realistic if your device provides them.";
+ }
 }
 function speakFrom(start){
  if(!("speechSynthesis" in window)){status.textContent="Speech playback is not supported by this browser.";return;}
+ if(!chosenVoices.length){loadVoices();if(!chosenVoices.length)return;}
  window.speechSynthesis.cancel();
  offset=Math.max(0,Math.min(script.length-1,start||0));
- const remaining=script.slice(offset);
- const style=styles[voiceStyle.value]||styles.natural;
- const utterance=new SpeechSynthesisUtterance(remaining);
- const voice=chooseVoice(voiceStyle.value);
- if(voice)utterance.voice=voice;
- utterance.rate=style.rate; utterance.pitch=style.pitch; utterance.lang=voice?.lang||"en-US";
- currentUtterance=utterance; isPlaying=true;
- utterance.onstart=()=>{status.textContent="Playing · "+voiceStyle.options[voiceStyle.selectedIndex].text+(voice?" ("+voice.name+")":" (device default voice)");};
- utterance.onboundary=(event)=>{if(typeof event.charIndex==="number")updateTime(Math.min(script.length,offset+event.charIndex));};
+ const index=Math.max(0,Math.min(chosenVoices.length-1,Number(voiceSelect.value)||0));
+ const voice=chosenVoices[index], preset=delivery[index]||delivery[0];
+ const utterance=new SpeechSynthesisUtterance(script.slice(offset));
+ utterance.voice=voice;utterance.lang=voice.lang||"en-US";utterance.rate=preset.rate;utterance.pitch=preset.pitch;utterance.volume=1;
+ isPlaying=true;
+ utterance.onstart=()=>{status.textContent="Playing with Voice "+(index+1)+": "+voice.name+" · "+preset.label+".";};
+ utterance.onboundary=e=>{if(typeof e.charIndex==="number")updateTime(Math.min(script.length,offset+e.charIndex));};
  utterance.onend=()=>{isPlaying=false;offset=0;updateTime(script.length);status.textContent="Briefing finished.";};
- utterance.onerror=(event)=>{if(event.error!=="canceled"&&event.error!=="interrupted")status.textContent="This device could not play that voice. Try another voice style.";isPlaying=false;};
+ utterance.onerror=e=>{isPlaying=false;if(e.error!=="canceled"&&e.error!=="interrupted")status.textContent="That voice could not play on this device. Choose another installed voice.";};
  window.speechSynthesis.speak(utterance);
 }
-play.addEventListener("click",()=>{if(isPlaying&&window.speechSynthesis?.paused){window.speechSynthesis.resume();return;}speakFrom(offset);});
-pause.addEventListener("click",()=>{if(!("speechSynthesis" in window))return;if(window.speechSynthesis.speaking&&!window.speechSynthesis.paused){window.speechSynthesis.pause();status.textContent="Paused."; }else if(window.speechSynthesis.paused){window.speechSynthesis.resume();status.textContent="Playing…";}});
+play.addEventListener("click",()=>{if(window.speechSynthesis?.paused){window.speechSynthesis.resume();isPlaying=true;return;}speakFrom(offset);});
+pause.addEventListener("click",()=>{if(!("speechSynthesis" in window))return;if(window.speechSynthesis.speaking&&!window.speechSynthesis.paused){window.speechSynthesis.pause();status.textContent="Paused.";}else if(window.speechSynthesis.paused){window.speechSynthesis.resume();status.textContent="Playing…";}});
 stop.addEventListener("click",()=>{if("speechSynthesis" in window)window.speechSynthesis.cancel();isPlaying=false;offset=0;updateTime(0);status.textContent="Playback stopped.";});
-timebar.addEventListener("change",()=>{const target=Math.round(Number(timebar.value)/1000*script.length);let start=target;while(start>0&&/[A-Za-z]/.test(script[start-1]||"")&&/[A-Za-z]/.test(script[start]||""))start--;offset=start;updateTime(start);if(isPlaying||window.speechSynthesis?.speaking)speakFrom(start);else status.textContent="Position selected · press Play to continue from here.";});
-voiceStyle.addEventListener("change",()=>{if(isPlaying||window.speechSynthesis?.speaking)speakFrom(offset);});
-function loadVoices(){voices=window.speechSynthesis?.getVoices?.()||[];}
+timebar.addEventListener("change",()=>{let target=Math.round(Number(timebar.value)/1000*script.length);while(target>0&&/[A-Za-z]/.test(script[target-1]||"")&&/[A-Za-z]/.test(script[target]||""))target--;offset=target;updateTime(target);if(isPlaying||window.speechSynthesis?.speaking)speakFrom(target);else status.textContent="Position selected · press Play to continue.";});
+voiceSelect.addEventListener("change",()=>{if(isPlaying||window.speechSynthesis?.speaking)speakFrom(offset);});
 if("speechSynthesis" in window){loadVoices();window.speechSynthesis.addEventListener?.("voiceschanged",loadVoices);}
 updateTime(0);
 window.addEventListener("pagehide",()=>{if("speechSynthesis" in window)window.speechSynthesis.cancel();});
