@@ -327,3 +327,51 @@ footer img {
   flex: 0 0 42px !important;
   object-fit: contain !important;
 }
+
+
+/* Mobile home-screen reminder */
+.home-screen-reminder {
+  position: fixed;
+  z-index: 1000;
+  inset-inline: 12px;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  max-width: 620px;
+  margin-inline: auto;
+  padding: 14px;
+  color: #243447;
+  background: #fff;
+  border: 1px solid #dce4ec;
+  border-top: 3px solid #c6a45b;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(9, 29, 48, .22);
+  font-size: 14px;
+  line-height: 1.45;
+}
+.home-screen-reminder__copy { min-width: 0; }
+.home-screen-reminder__copy strong { display: block; color: #102a43; font-size: 15px; }
+.home-screen-reminder__copy p { margin: 4px 0 0; }
+.home-screen-reminder__instructions { margin-top: 8px; color: #102a43; }
+.home-screen-reminder__actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.home-screen-reminder button {
+  min-height: 36px;
+  border: 0;
+  border-radius: 7px;
+  padding: 7px 10px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.home-screen-reminder__add { color: #fff; background: #102a43; }
+.home-screen-reminder__close { color: #243447; background: #eef2f6; font-size: 20px !important; }
+@media (min-width: 761px) {
+  .home-screen-reminder { display: none; }
+}
+@media (max-width: 420px) {
+  .home-screen-reminder { inset-inline: 8px; padding: 11px; gap: 8px; font-size: 13px; }
+  .home-screen-reminder__actions { flex-direction: column; align-items: stretch; }
+  .home-screen-reminder__add { padding-inline: 8px; }
+}
