@@ -375,3 +375,52 @@ footer img {
   .home-screen-reminder__actions { flex-direction: column; align-items: stretch; }
   .home-screen-reminder__add { padding-inline: 8px; }
 }
+
+
+/* Installed PWA: make the site feel like a mobile app rather than a browser page. */
+html.is-installed-app body {
+  min-height: 100dvh;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+html.is-installed-app .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 4px 18px rgba(9, 29, 48, .12);
+}
+html.is-installed-app .official-bar {
+  font-size: 9px;
+  padding-block: 5px;
+}
+html.is-installed-app .header-content {
+  padding-top: 12px;
+}
+html.is-installed-app nav {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+html.is-installed-app nav::-webkit-scrollbar { display: none; }
+html.is-installed-app nav a {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+html.is-installed-app main {
+  min-height: 60dvh;
+}
+html.is-installed-app .home-screen-reminder {
+  display: none !important;
+}
+@media (display-mode: standalone) and (max-width: 760px) {
+  .container, main { width: calc(100% - 24px); }
+  .site-header .header-content { padding-top: 10px; }
+  .brand-logo { width: 46px; height: 46px; }
+  .brand-text strong { font-size: 18px; }
+  .brand-text small { font-size: 9px; }
+  .homepage-layout > .hero { padding: 28px 18px; }
+  main { padding-top: 18px; }
+  .site-footer { padding-bottom: max(18px, env(safe-area-inset-bottom)); }
+}
