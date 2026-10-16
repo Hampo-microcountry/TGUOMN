@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   let dismissed = false;
   try {
-    dismissed = localStorage.getItem("tguomn-home-screen-dismissed") === "yes";
+    dismissed = localStorage.getItem("tguomn-home-screen-dismissed-v2") === "yes";
   } catch (_) {}
 
   if (isMobile && !isAppInstalled() && !dismissed) {
@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
     reminder.querySelector(".home-screen-reminder__close").addEventListener("click", () => {
       reminder.remove();
       try {
-        localStorage.setItem("tguomn-home-screen-dismissed", "yes");
+        localStorage.setItem("tguomn-home-screen-dismissed-v2", "yes");
       } catch (_) {}
     });
 
