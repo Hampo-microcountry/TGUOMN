@@ -312,19 +312,18 @@ nav { row-gap: 0; }
   .homepage-layout > .section { padding-inline: 14px; }
 }
 
-/* Keep the footer emblem compact on every page, regardless of the image's
-   intrinsic dimensions or any page-specific image styles. */
-.site-footer .footer-logo,
-footer .footer-logo,
-.site-footer .footer-brand img,
-footer .footer-brand img {
+/* Global footer-image guard: applies to every page, even if its footer
+   markup or image class differs. Keep the emblem from expanding the footer. */
+.site-footer img,
+footer img {
   display: block;
+  box-sizing: border-box;
   width: 42px !important;
   height: 42px !important;
-  min-width: 42px;
-  min-height: 42px;
-  max-width: 42px;
-  max-height: 42px;
-  flex: 0 0 42px;
-  object-fit: contain;
+  min-width: 42px !important;
+  min-height: 42px !important;
+  max-width: 42px !important;
+  max-height: 42px !important;
+  flex: 0 0 42px !important;
+  object-fit: contain !important;
 }
