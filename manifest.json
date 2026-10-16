@@ -2,7 +2,7 @@
   "id": "./",
   "name": "The Great Union of Micro Nations",
   "short_name": "TGUOMN",
-  "description": "The official website of The Great Union of Micro Nations.",
+  "description": "The official website of The Great Union of Micro Nations, including audio briefings.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -15,12 +15,6 @@
   "theme_color": "#102a43",
   "icons": [
     {
-      "src": "assets/LOGGO.png",
-      "sizes": "any",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
       "src": "assets/app-icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
@@ -31,6 +25,12 @@
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "maskable"
+    },
+    {
+      "src": "assets/LOGGO.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "shortcuts": [
@@ -50,6 +50,18 @@
       "name": "Laws",
       "short_name": "Laws",
       "url": "./laws.html",
+      "icons": [
+        {
+          "src": "assets/app-icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Podcast",
+      "short_name": "Podcast",
+      "url": "./podcast.html",
       "icons": [
         {
           "src": "assets/app-icon.svg",
