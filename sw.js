@@ -1,12 +1,13 @@
 
-const CACHE_NAME = "tguomn-cache-v3";
+const CACHE_NAME = "tguomn-cache-v4";
 
 const CORE_FILES = [
   "./",
   "./index.html",
   "./manifest.json",
   "./assets/css/style.css",
-  "./assets/LOGGO.png"
+  "./assets/LOGGO.png",
+  "./assets/app-icon.svg"
 ];
 
 self.addEventListener("install", (event) => {
