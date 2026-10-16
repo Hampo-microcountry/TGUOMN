@@ -311,3 +311,20 @@ nav { row-gap: 0; }
 @media (max-width: 760px) {
   .homepage-layout > .section { padding-inline: 14px; }
 }
+
+/* Keep the footer emblem compact on every page, regardless of the image's
+   intrinsic dimensions or any page-specific image styles. */
+.site-footer .footer-logo,
+footer .footer-logo,
+.site-footer .footer-brand img,
+footer .footer-brand img {
+  display: block;
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px;
+  min-height: 42px;
+  max-width: 42px;
+  max-height: 42px;
+  flex: 0 0 42px;
+  object-fit: contain;
+}
