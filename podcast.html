@@ -5,12 +5,22 @@
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="TGUOMN">
 <link rel="icon" href="assets/app-icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="assets/LOGGO.png">
 <link rel="manifest" href="manifest.json"><link rel="stylesheet" href="assets/css/style.css"><script src="assets/js/main.js" defer></script>
-<title>Podcast &amp; Audio Briefings | TGUOMN</title></head>
+<title>Podcast &amp; Audio Briefings | TGUOMN</title><style>
+.app-exclusive-content { display: none; }
+.app-exclusive-message { display: block; }
+body.tguomn-installed-app .app-exclusive-content { display: block; }
+body.tguomn-installed-app .app-exclusive-message { display: none; }
+</style>
+</head>
 <body><header class="site-header"><div class="official-bar">OFFICIAL WEBSITE OF THE GREAT UNION OF MICRO NATIONS</div><div class="container header-content">
 <a class="brand" href="index.html"><img src="assets/LOGGO.png" alt="TGUOMN logo" class="brand-logo"><span class="brand-text"><strong>TGUOMN</strong><small>The Great Union of Micro Nations</small></span></a>
 <nav aria-label="Main navigation"><a href="index.html">Home</a><a href="about.html">About</a><a href="members.html">Members</a><a href="laws.html">Laws</a><a href="announcements.html">Announcements</a><a href="podcast.html" aria-current="page">Podcast</a></nav>
 </div></header>
-<main><article class="page-content"><p class="eyebrow">LISTEN • LEARN • CONNECT</p><h2>TGUOMN Audio Briefings</h2>
+<main><article class="page-content"><section class="app-exclusive-message"><p class="eyebrow">MOBILE APP EXCLUSIVE</p><h2>Audio briefings are for the TGUOMN app</h2>
+<p>The podcast is available only when TGUOMN is opened from its installed home-screen app on a phone or tablet.</p>
+<div class="notice"><h3>Install TGUOMN</h3><p><strong>Android:</strong> open the browser menu and choose “Install app” or “Add to Home screen.”</p><p><strong>iPhone/iPad:</strong> open this page in Safari, tap Share, then “Add to Home Screen.” After installing, open TGUOMN from the new home-screen icon.</p></div>
+<p><a href="index.html">← Back to the TGUOMN home page</a></p></section>
+<div class="app-exclusive-content"><p class="eyebrow">LISTEN • LEARN • CONNECT · APP EXCLUSIVE</p><h2>TGUOMN Audio Briefings</h2>
 <p>Short audio briefings about the Union, its member micronations, and cooperation in the micronational community.</p>
 <section class="section content-panel" aria-labelledby="episode-one"><p class="eyebrow">START HERE · EPISODE 001</p><h3 id="episode-one">What is TGUOMN?</h3>
 <p>Learn the purpose of The Great Union of Micro Nations and how cooperation can work while each member keeps its own identity and internal governance.</p>
@@ -18,7 +28,7 @@
 <div class="hero-actions"><button class="button button-primary" id="play-briefing" type="button">▶ Play briefing</button><button class="button button-secondary" id="stop-briefing" type="button">■ Stop</button></div>
 <p id="audio-status" role="status" aria-live="polite">Ready to play. Uses your browser's built-in speech voice; no audio file or account is needed.</p></section>
 <section class="section"><div class="notice"><h3>Make TGUOMN one tap away</h3><p>Install TGUOMN on your phone's home screen to open the Union's pages and audio briefings like a standalone app.</p><p><strong>Android:</strong> use “Add to Home” if your browser offers it, or open the browser menu and choose “Install app” / “Add to Home screen.”</p><p><strong>iPhone:</strong> open this page in Safari, tap Share, then choose “Add to Home Screen.”</p></div></section>
-<p><a href="index.html">← Back to the TGUOMN home page</a></p></article></main>
+<p><a href="index.html">← Back to the TGUOMN home page</a></p></div></article></main>
 <footer class="site-footer"><div class="container footer-content"><div class="footer-brand"><img src="assets/LOGGO.png" alt="" class="footer-logo"><div><strong>The Great Union of Micro Nations</strong><p>Unity through cooperation and mutual respect.</p></div></div>
 <div class="footer-links"><a href="index.html">Home</a><a href="members.html">Members</a><a href="laws.html">Laws</a><a href="announcements.html">Announcements</a><a href="podcast.html">Podcast</a><a href="contact.html">Contact</a></div>
 <p class="footer-disclaimer">TGUOMN is a micronational organization. Its existence does not constitute or imply international recognition of its members as sovereign states.</p><p class="copyright">TGUOMN™ and The Great Union of Micro Nations name and branding are claimed as trademarks by the organization.</p></div></footer>
@@ -30,4 +40,11 @@ play.addEventListener("click",()=>{if(!("speechSynthesis" in window)){status.tex
 stop.addEventListener("click",()=>{if("speechSynthesis" in window)window.speechSynthesis.cancel();status.textContent="Playback stopped.";});
 window.addEventListener("pagehide",()=>{if("speechSynthesis" in window)window.speechSynthesis.cancel();});
 })();
-</script></body></html>
+</script><script>
+(() => {
+  const isInstalled = () => window.matchMedia('(display-mode: standalone)').matches ||
+    window.matchMedia('(display-mode: fullscreen)').matches || window.navigator.standalone === true;
+  if (isInstalled()) document.body.classList.add('tguomn-installed-app');
+})();
+</script>
+</body></html>
