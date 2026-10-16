@@ -7,6 +7,10 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Add app-shell styling when launched from a home-screen icon.
+  if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true) {
+    document.documentElement.classList.add("is-installed-app");
+  }
   // Automatically update the copyright year.
   const yearElements = document.querySelectorAll("[data-current-year]");
 
