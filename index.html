@@ -1,0 +1,681 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102b46">
+  <meta name="description" content="The Great Union of Micro Nations — official alliance portal, laws, membership, and diplomatic information.">
+
+  <title>TGUOMN | The Great Union of Micro Nations</title>
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/LOGGO">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TGUOMN">
+
+  <style>
+    :root {
+      --navy: #102b46;
+      --navy-light: #193e5e;
+      --teal: #087f8c;
+      --teal-light: #e7f4f5;
+      --paper: #ffffff;
+      --background: #f3f6f9;
+      --text: #243447;
+      --muted: #647589;
+      --border: #dce4ec;
+      --gold: #b99a55;
+      --width: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    a { color: var(--teal); }
+    a:focus-visible, button:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    .official-bar {
+      background: #0a2035;
+      color: #e4edf5;
+      font-size: 12px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      padding: 8px 20px;
+    }
+
+    .official-inner, .header-inner, .nav-inner,
+    .container, .footer-inner {
+      max-width: var(--width);
+      margin: auto;
+    }
+
+    .header {
+      background: var(--navy);
+      color: white;
+      border-bottom: 4px solid var(--gold);
+    }
+
+    .header-inner {
+      padding: 23px 22px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .flag {
+      width: 76px;
+      height: 76px;
+      object-fit: contain;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 4px;
+      padding: 5px;
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 600;
+      font-size: clamp(22px, 3vw, 32px);
+      line-height: 1.2;
+      letter-spacing: .01em;
+    }
+
+    .brand-subtitle {
+      margin: 7px 0 0;
+      color: #c8d8e7;
+      font-size: 13px;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0 16px;
+      flex-wrap: wrap;
+    }
+
+    .nav a {
+      display: block;
+      padding: 15px 13px;
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 650;
+      text-decoration: none;
+      border-bottom: 3px solid transparent;
+    }
+
+    .nav a:hover, .nav a:focus-visible {
+      color: var(--teal);
+      border-bottom-color: var(--teal);
+    }
+
+    .container { padding: 28px 22px 50px; }
+
+    .breadcrumb {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 17px;
+    }
+
+    .hero {
+      background: var(--navy);
+      color: white;
+      padding: clamp(28px, 5vw, 54px);
+      border-radius: 5px;
+      position: relative;
+      overflow: hidden;
+      border-left: 5px solid var(--gold);
+    }
+
+    .eyebrow {
+      color: #a8dce0;
+      text-transform: uppercase;
+      letter-spacing: .15em;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    h1, h2, h3 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 600;
+    }
+
+    .hero h1 {
+      font-size: clamp(30px, 5vw, 47px);
+      line-height: 1.15;
+      max-width: 760px;
+      margin: 14px 0;
+    }
+
+    .hero p {
+      max-width: 700px;
+      color: #d7e4ee;
+      font-size: 16px;
+      margin-bottom: 24px;
+    }
+
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 17px;
+      border-radius: 3px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+
+    .button-primary {
+      background: var(--teal);
+      color: white;
+    }
+
+    .button-primary:hover { background: #096b76; }
+
+    .button-light {
+      background: white;
+      color: var(--navy);
+    }
+
+    .button-outline {
+      background: transparent;
+      color: white;
+      border-color: #a7bdce;
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin: 34px 0 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: var(--navy);
+      font-size: 23px;
+    }
+
+    .section-heading a {
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 17px;
+    }
+
+    .panel {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 22px;
+      min-width: 0;
+    }
+
+    .panel h3 {
+      color: var(--navy);
+      font-size: 19px;
+      margin: 0 0 8px;
+    }
+
+    .panel p {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0 0 15px;
+    }
+
+    .panel a {
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .notice {
+      background: var(--teal-light);
+      border: 1px solid #c8e5e7;
+      border-left: 4px solid var(--teal);
+      border-radius: 3px;
+      padding: 18px 21px;
+      margin-top: 24px;
+    }
+
+    .notice h3 {
+      color: var(--navy);
+      font-size: 17px;
+      margin: 0 0 5px;
+    }
+
+    .notice p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .status {
+      display: inline-block;
+      background: #f2ead7;
+      color: #6b5421;
+      border-radius: 2px;
+      padding: 4px 8px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .footer {
+      background: #0a2035;
+      color: #c9d6e2;
+      padding: 30px 22px;
+      font-size: 12px;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .footer a { color: #b6dfe2; }
+
+    /* Installation screen */
+    .install-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background: var(--navy);
+      color: white;
+      overflow-y: auto;
+    }
+
+    .install-card {
+      width: 100%;
+      max-width: 440px;
+      background: white;
+      color: var(--text);
+      padding: 28px;
+      border-radius: 6px;
+      text-align: center;
+      box-shadow: 0 18px 70px rgba(0,0,0,.25);
+    }
+
+    .install-logo {
+      width: 85px;
+      height: 85px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    .install-card h1 {
+      color: var(--navy);
+      font-size: 27px;
+      margin: 5px 0 8px;
+    }
+
+    .install-card p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .install-steps {
+      text-align: left;
+      padding-left: 22px;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .install-card .button {
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .install-help {
+      font-size: 12px !important;
+      margin-top: 15px;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 760px) {
+      .header-inner { padding: 18px 16px; gap: 12px; }
+      .flag { width: 58px; height: 58px; }
+      .brand-subtitle { font-size: 10px; letter-spacing: .05em; }
+      .nav-inner { padding: 5px 10px; }
+      .nav a { padding: 10px 8px; font-size: 12px; }
+      .container { padding: 20px 15px 35px; }
+      .grid { grid-template-columns: 1fr; }
+      .hero { padding: 28px 22px; }
+      .section-heading h2 { font-size: 21px; }
+    }
+
+    @media (display-mode: standalone) {
+      body { overscroll-behavior-y: contain; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Mobile users must install the PWA to access the portal. -->
+  <section class="install-screen" id="installScreen" aria-labelledby="installTitle">
+    <div class="install-card">
+      <img class="install-logo" src="assets/LOGGO" alt="TGUOMN flag">
+      <h1 id="installTitle">TGUOMN Official App</h1>
+      <p>
+        Install the official portal on your device to access alliance
+        information, legislation, membership records, and announcements.
+      </p>
+
+      <button class="button button-primary hidden" id="installButton">
+        Install TGUOMN
+      </button>
+
+      <div id="iosInstructions" class="hidden">
+        <ol class="install-steps">
+          <li>Open this page in <strong>Safari</strong>.</li>
+          <li>Tap the <strong>Share</strong> icon.</li>
+          <li>Select <strong>Add to Home Screen</strong>.</li>
+          <li>Tap <strong>Add</strong> to finish.</li>
+        </ol>
+      </div>
+
+      <div id="androidInstructions" class="hidden">
+        <p>
+          If the install button does not appear, open your browser menu
+          and select <strong>Install app</strong> or
+          <strong>Add to Home screen</strong>.
+        </p>
+      </div>
+
+      <p id="otherInstructions" class="hidden">
+        Open this portal in a supported mobile browser and use its
+        installation option if available.
+      </p>
+
+      <p class="install-help">
+        Already installed? Close this browser tab and launch TGUOMN
+        from your home screen.
+      </p>
+    </div>
+  </section>
+
+  <div id="app">
+    <div class="official-bar">
+      <div class="official-inner">
+        Official portal · The Great Union of Micro Nations
+      </div>
+    </div>
+
+    <header class="header">
+      <div class="header-inner">
+        <img class="flag" src="assets/LOGGO" alt="TGUOMN official flag">
+        <div>
+          <p class="brand-title">The Great Union of Micro Nations</p>
+          <p class="brand-subtitle">Cooperation · Sovereignty · Diplomacy</p>
+        </div>
+      </div>
+    </header>
+
+    <nav class="nav" aria-label="Main navigation">
+      <div class="nav-inner">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="charter.html">Charter</a>
+        <a href="structure.html">Structure</a>
+        <a href="laws.html">Legislation</a>
+        <a href="members.html">Member Nations</a>
+        <a href="diplomacy.html">Diplomacy</a>
+        <a href="documents.html">Documents</a>
+        <a href="announcements.html">News</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </nav>
+
+    <main class="container">
+      <div class="breadcrumb">Home / Official Portal</div>
+
+      <section class="hero">
+        <span class="eyebrow">Official Union Portal</span>
+        <h1>A Union of Independent Micronations</h1>
+        <p>
+          The Great Union of Micro Nations provides a framework for
+          cooperation, diplomatic communication, shared legislation,
+          and the continued independence of its member micronations.
+        </p>
+        <div class="actions">
+          <a class="button button-light" href="about.html">About the Union</a>
+          <a class="button button-outline" href="charter.html">Read the Charter</a>
+        </div>
+      </section>
+
+      <section class="notice">
+        <h3>Official Information Notice</h3>
+        <p>
+          This portal is the designated information website of TGUOMN.
+          Membership, legislation, and announcements should be treated
+          as official only when published or confirmed through authorized
+          union channels.
+        </p>
+      </section>
+
+      <div class="section-heading">
+        <h2>Union Information</h2>
+        <a href="about.html">View overview →</a>
+      </div>
+
+      <section class="grid">
+        <article class="panel">
+          <h3>Founding Principles</h3>
+          <p>
+            Learn about the Union's objectives, leadership, cooperation,
+            and respect for each member's domestic independence.
+          </p>
+          <a href="charter.html">Read the charter →</a>
+        </article>
+
+        <article class="panel">
+          <h3>Member Nations</h3>
+          <p>
+            Consult the official directory of participating micronations
+            and their recognized representatives within the Union.
+          </p>
+          <a href="members.html">View membership →</a>
+        </article>
+
+        <article class="panel">
+          <h3>Legislation</h3>
+          <p>
+            Review union laws, their publication status, and the rules
+            governing domestic opt-outs by member nations.
+          </p>
+          <a href="laws.html">Browse legislation →</a>
+        </article>
+
+        <article class="panel">
+          <h3>Diplomatic Affairs</h3>
+          <p>
+            Find information about official communications, external
+            relations, and diplomatic procedures.
+          </p>
+          <a href="diplomacy.html">Diplomatic information →</a>
+        </article>
+
+        <article class="panel">
+          <h3>Official Documents</h3>
+          <p>
+            Access published agreements, administrative notices,
+            official records, and other union documents.
+          </p>
+          <a href="documents.html">View documents →</a>
+        </article>
+
+        <article class="panel">
+          <h3>Announcements</h3>
+          <p>
+            Read official notices concerning union activities,
+            proposed legislation, and administrative decisions.
+          </p>
+          <a href="announcements.html">View announcements →</a>
+        </article>
+      </section>
+
+      <div class="section-heading">
+        <h2>Legislative Calendar</h2>
+        <span class="status">Scheduled</span>
+      </div>
+
+      <section class="panel">
+        <h3>Founding Laws — 16 October 2026</h3>
+        <p>
+          The following five laws are scheduled for consideration or
+          passage on 16 October 2026. Until formally adopted and
+          published, they should be regarded as proposed or scheduled,
+          not as enacted law.
+        </p>
+        <ol>
+          <li>Founder’s Authority and Leadership</li>
+          <li>Member Sovereignty and Domestic Independence</li>
+          <li>Domestic Opt-Out Rights</li>
+          <li>Continued Validity of Alliance Laws</li>
+          <li>Diplomatic Communication and Administration</li>
+        </ol>
+        <a href="laws.html">Review the legislative register →</a>
+      </section>
+
+      <section class="notice">
+        <h3>Member Sovereignty</h3>
+        <p>
+          The Union's proposed framework allows a member's authorized
+          governing authority to request an exemption from the domestic
+          enforcement of a union law, subject to the Union's adopted
+          procedures. Such an exemption would concern that member's
+          domestic application, not the law's status for other members.
+        </p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div>
+          <strong>The Great Union of Micro Nations</strong>
+          <p>Official information and administrative portal.</p>
+        </div>
+        <div>
+          <a href="contact.html">Contact</a> ·
+          <a href="documents.html">Documents</a> ·
+          <a href="charter.html">Charter</a>
+          <p>
+            A micronational organization; this website does not imply
+            international recognition as a sovereign state.
+          </p>
+          <p>© <span id="year"></span> TGUOMN</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const installScreen = document.getElementById("installScreen");
+    const installButton = document.getElementById("installButton");
+    const iosInstructions = document.getElementById("iosInstructions");
+    const androidInstructions = document.getElementById("androidInstructions");
+    const otherInstructions = document.getElementById("otherInstructions");
+
+    let installPrompt = null;
+
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isAndroid = /android/i.test(navigator.userAgent);
+    const isStandalone = () =>
+      window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone === true;
+
+    function showInstallGate() {
+      const isMobile = isIOS || isAndroid ||
+        window.matchMedia("(max-width: 760px)").matches;
+
+      if (!isMobile || isStandalone()) {
+        installScreen.style.display = "none";
+        return;
+      }
+
+      installScreen.style.display = "flex";
+
+      if (isIOS) {
+        iosInstructions.classList.remove("hidden");
+      } else if (isAndroid) {
+        androidInstructions.classList.remove("hidden");
+      } else {
+        otherInstructions.classList.remove("hidden");
+      }
+    }
+
+    window.addEventListener("beforeinstallprompt", (event) => {
+      event.preventDefault();
+      installPrompt = event;
+      installButton.classList.remove("hidden");
+    });
+
+    installButton.addEventListener("click", async () => {
+      if (!installPrompt) return;
+
+      installPrompt.prompt();
+      await installPrompt.userChoice;
+      installPrompt = null;
+    });
+
+    window.addEventListener("appinstalled", () => {
+      installScreen.style.display = "none";
+    });
+
+    window.addEventListener("pageshow", showInstallGate);
+    window.addEventListener("resize", showInstallGate);
+    showInstallGate();
+
+    if ("serviceWorker" in navigator && location.protocol !== "file:") {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch((error) => {
+          console.error("Service worker registration failed:", error);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
