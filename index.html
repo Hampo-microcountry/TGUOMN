@@ -22,6 +22,21 @@
   <link rel="stylesheet" href="assets/css/style.css">
 
   <script src="assets/js/main.js" defer></script>
+<style>
+/* Podcast access is reserved for the installed TGUOMN mobile app. */
+.app-exclusive, .app-exclusive-link { display: none !important; }
+body.tguomn-installed-app .app-exclusive { display: block !important; }
+body.tguomn-installed-app .app-exclusive-link { display: inline-flex !important; }
+</style>
+<script>
+(() => {
+  const isInstalled = () => window.matchMedia('(display-mode: standalone)').matches ||
+    window.matchMedia('(display-mode: fullscreen)').matches || window.navigator.standalone === true;
+  document.addEventListener('DOMContentLoaded', () => {
+    if (isInstalled()) document.body.classList.add('tguomn-installed-app');
+  });
+})();
+</script>
 </head>
 
 <body>
@@ -48,7 +63,7 @@
         <a href="announcements.html">Announcements</a>
         <a href="documents.html">Documents</a>
         <a href="history.html">History</a>
-        <a href="podcast.html">Podcast</a>
+        <a class="app-exclusive-link" href="podcast.html">Podcast</a>
         <a href="contact.html">Contact</a>
       </nav>
     </div>
@@ -200,9 +215,9 @@
         </article>
       </div>
     </section>
-    <section class="container section">
+    <section class="container section app-exclusive">
       <div class="content-panel">
-        <p class="eyebrow">TGUOMN AUDIO BRIEFINGS</p>
+        <p class="eyebrow">TGUOMN AUDIO BRIEFINGS · APP EXCLUSIVE</p>
         <h2>Listen to the Union</h2>
         <p>Hear short audio briefings about TGUOMN, its member nations, and its work. Add TGUOMN to your phone's home screen to keep the site one tap away, like a standalone app.</p>
         <a class="button button-primary" href="podcast.html">Explore the Podcast →</a>
